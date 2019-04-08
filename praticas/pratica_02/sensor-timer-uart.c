@@ -64,7 +64,7 @@ PROCESS_THREAD(uart_process, ev, data)
         for(int i=0;i<BUF_SIZE;i++) {
             avg += buffer[i];
         }
-        avg = avg/BUF_SIZE;
+        avg = avg/(BUF_SIZE);
         printf("Temperatura media: %d\n", avg);
     }
   }
