@@ -69,6 +69,9 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
           PROCESS_WAIT_EVENT();
       }
+ 
+      PROCESS_WAIT_EVENT();
+
   }
   // Se não utilizar mDNS, use a linha abaixo para registrar IPv6 destino
   // uip_ip6addr(&ipaddr, 0xfe80, 0, 0, 0, 0x215, 0x2000, 0x0002, 0x2145);
