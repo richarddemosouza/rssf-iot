@@ -27,7 +27,8 @@ void print_local_addresses(void)
   int i;
   uint8_t state;
 
-  printf("Encerecos IPv6: ");
+  printf("Enderecos IPv6: ");
+
   for(i = 0; i < UIP_DS6_ADDR_NB; i++)
   {
     state = uip_ds6_if.addr_list[i].state;

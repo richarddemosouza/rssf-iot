@@ -15,7 +15,9 @@ static void udp_handler(void);
 static void send_packet(void);
 
 /*---------------------------------------------------------------------------*/
+
 PROCESS(udp_client_process, "Processo UDP cliente");
+
 
 /*---------------------------------------------------------------------------*/
 AUTOSTART_PROCESSES(&resolv_process, &udp_client_process, &sensor_process);
@@ -55,7 +57,21 @@ PROCESS_THREAD(udp_client_process, ev, data)
   while(status != RESOLV_STATUS_CACHED)
   {
       status = set_connection_address(&ipaddr, UDP_CONNECTION_ADDR);
+
+      if(status == RESOLV_STATUS_RESOLVING)
+      {
+          PROCESS_WAIT_EVENT();
+      }
+      else if(status != RESOLV_STATUS_CACHED)
+      {
+
+          printf("Nao foi possivel obter um IPv6 do servidor.\r\n");
+
+          PROCESS_WAIT_EVENT();
+      }
+ 
       PROCESS_WAIT_EVENT();
+
   }
   // Se não utilizar mDNS, use a linha abaixo para registrar IPv6 destino
   // uip_ip6addr(&ipaddr, 0xfe80, 0, 0, 0, 0x215, 0x2000, 0x0002, 0x2145);
@@ -67,7 +83,9 @@ PROCESS_THREAD(udp_client_process, ev, data)
   printf("Servidor UDP: ");
   printipv6(&client_conn->ripaddr);
   printf("\r\nPorta local: %u.\r\nPorta remota: %u.\r\n", UIP_HTONS(client_conn->lport),
+
                                                           UIP_HTONS(client_conn->rport));
+
 
   // Se chegou até aqui, então a conexão foi bem sucedida!
   // Agora vamos enviar e receber dados!

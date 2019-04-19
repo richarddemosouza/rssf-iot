@@ -11,14 +11,11 @@ static int buffer[BUF_SIZE];
 static int buf_c = 0;
 
 static struct etimer et_sensor;
-static struct etimer et_uart;
 
 /*---------------------------------------------------------------------------*/
 PROCESS(sensor_process, "Sensor process");
-PROCESS(uart_process, "Serial process");
-
 /*---------------------------------------------------------------------------*/
-AUTOSTART_PROCESSES(&sensor_process,&uart_process);
+//AUTOSTART_PROCESSES(&sensor_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(sensor_process, ev, data)
 {
@@ -37,8 +34,8 @@ PROCESS_THREAD(sensor_process, ev, data)
         int val = batmon_sensor.value(BATMON_SENSOR_TYPE_TEMP); // lê sensor
 
         /* Insira seu código aqui */
-
-
+        buffer[buf_c++] = val;
+        buf_c = buf_c % BUF_SIZE;
 
         printf("Leu %d\n", val);
     }
@@ -47,27 +44,9 @@ PROCESS_THREAD(sensor_process, ev, data)
   PROCESS_END();
 }
 
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(uart_process, ev, data)
-{
-  PROCESS_BEGIN();
-
-  /* Insira seu código aqui */
-
-  while(1) {
-    PROCESS_WAIT_EVENT();
-    if(ev == PROCESS_EVENT_TIMER)  // se passaram 10 segundos
-    {
-        /* Insira seu código aqui */
-
-        int avg = 0;
-        for(int i=0;i<BUF_SIZE;i++) {
-            avg += buffer[i];
-        }
-        avg = avg/(BUF_SIZE);
-        printf("Temperatura media: %d\n", avg);
-    }
-  }
-
-  PROCESS_END();
-  }
+int get_temp_average(void) {
+int avg = 0;
+for(int i=0; i<BUF_SIZE; i++)
+avg += buffer[i];
+return avg/BUF_SIZE;
+}
